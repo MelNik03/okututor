@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     
     # Наше приложение пользователей
     "users",
+    "courses",
 ]
 
 AUTHENTICATION_BACKENDS = (
