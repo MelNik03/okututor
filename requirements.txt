@@ -1,0 +1,10 @@
+Django>=4.2
+djangorestframework
+django-allauth
+dj-rest-auth
+django-cors-headers
+drf-spectacular
+djangorestframework-simplejwt
+social-auth-app-django
+gunicorn
+whitenoise

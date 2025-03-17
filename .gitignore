@@ -1,0 +1,24 @@
+# Virtual environment
+venv/
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Database
+*.sqlite3
+db.sqlite3
+
+# Logs
+*.log
+
+# Django migrations
+*/migrations/*
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+*.swp
