@@ -70,7 +70,9 @@ DJOSER = {
     "USER_CREATE_PASSWORD_RETYPE": True,
     "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,
     "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
-    "SEND_CONFIRMATION_EMAIL": True,
+    'SEND_ACTIVATION_EMAIL': False,  # Отключаем отправку email-подтверждения
+    'SEND_CONFIRMATION_EMAIL': False,  # Отключаем подтверждение email после регистрации
+
 }
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "your-google-client-id.apps.googleusercontent.com"
