@@ -1,5 +1,6 @@
 from django import forms
 from .models import Course
+from .models import Review
 
 class CourseForm(forms.ModelForm):
     class Meta:
@@ -21,3 +22,12 @@ class CourseForm(forms.ModelForm):
         elif days != 'specific':
             cleaned_data['specific_days'] = None  # Очищаем поле, если не выбрано "Конкретные дни"
         return cleaned_data
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'comment']
+        widgets = {
+            'rating': forms.Select(),
+            'comment': forms.Textarea(attrs={'rows': 3}),
+        }
