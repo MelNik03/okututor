@@ -20,9 +20,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('users/', include('users.urls')),
-    path('courses/', include('courses.urls')),
+    path('api/users/', include('users.urls')),
+    path('api/courses/', include('courses.urls')),
 ]
 
 # Обслуживание медиафайлов в режиме разработки

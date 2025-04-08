@@ -10,14 +10,17 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-from pathlib import Path, os
+import os
+import firebase_admin
+from firebase_admin import credentials
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+# Инициализация Firebase
+FIREBASE_CRED = credentials.Certificate(os.path.join(BASE_DIR, 'okututor-f276b-firebase-adminsdk-fbsvc-d70b957ee1.json'))
+firebase_admin.initialize_app(FIREBASE_CRED)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-bh7cb99jr1%&6gf_(hhaq29!rv1w&o!#by-u2trkl6erxu7+y4'
@@ -31,26 +34,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    
-    # DRF и авторизация
-    "rest_framework",
-    "rest_framework.authtoken",
-    "djoser",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
-    "social_django",
-    
-    # Наше приложение пользователей
-    "users",
-    "courses",
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'users',
+    'courses',
 ]
 
 AUTHENTICATION_BACKENDS = (

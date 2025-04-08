@@ -1,59 +1,51 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.decorators import login_required
-from .forms import UserRegistrationForm
-from django import forms
+from django.http import JsonResponse
+from okututor_backend.firebase_config import db, auth_client
+import json
 
-# Форма для авторизации
-class UserLoginForm(forms.Form):
-    email = forms.EmailField(label="Email")
-    password = forms.CharField(widget=forms.PasswordInput, label="Пароль")
+def register_user(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            email = data.get("email")
+            password = data.get("password")
+            username = data.get("username")
 
-def register(request):
-    if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
-            user.save()
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            return redirect('profile')
-    else:
-        form = UserRegistrationForm()
-    return render(request, 'users/register.html', {'form': form})
+            if not email or not password or not username:
+                return JsonResponse({"error": "Missing required fields"}, status=400)
 
-def login_view(request):
-    if request.method == 'POST':
-        form = UserLoginForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            user = authenticate(request, email=email, password=password)
-            if user is not None:
-                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                return redirect('profile')
-            else:
-                form.add_error(None, "Неверный email или пароль")
-    else:
-        form = UserLoginForm()
-    return render(request, 'users/login.html', {'form': form})
+            # Создаём пользователя в Firebase Authentication
+            user = auth_client.create_user(
+                email=email,
+                password=password,
+                display_name=username
+            )
 
-@login_required
-def profile(request):
-    if request.method == 'POST':
-        user = request.user
-        user.phone = request.POST.get('phone', user.phone)
-        user.location = request.POST.get('location', user.location)
-        user.bio = request.POST.get('bio', user.bio)
-        user.instagram = request.POST.get('instagram', user.instagram)
-        user.telegram = request.POST.get('telegram', user.telegram)
-        user.whatsapp = request.POST.get('whatsapp', user.whatsapp)
-        if 'avatar' in request.FILES:
-            user.avatar = request.FILES['avatar']
-        user.save()
-        return redirect('profile')
-    return render(request, 'users/profile.html', {'user': request.user})
-@login_required
-def logout_view(request):
-    logout(request)
-    return redirect('login')
+            # Сохраняем данные пользователя в Firestore
+            user_data = {
+                "email": email,
+                "username": username,
+                "created_at": firestore.SERVER_TIMESTAMP
+            }
+            db.collection("users").document(user.uid).set(user_data)
+
+            return JsonResponse({"message": "User registered successfully", "uid": user.uid}, status=201)
+        except auth_client.EmailAlreadyExistsError:
+            return JsonResponse({"error": "Email already exists"}, status=400)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+def login_user(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            id_token = data.get("id_token")  # Токен, полученный от фронтенда после входа
+
+            # Проверяем токен
+            decoded_token = auth_client.verify_id_token(id_token)
+            uid = decoded_token["uid"]
+            user = auth_client.get_user(uid)
+            return JsonResponse({"message": "User logged in", "uid": uid, "email": user.email}, status=200)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=401)
+    return JsonResponse({"error": "Invalid request method"}, status=405)

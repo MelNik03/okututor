@@ -1,58 +1,79 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .models import Course
-from .forms import CourseForm, ReviewForm
+from django.http import JsonResponse
+from okututor_backend.firebase_config import db
+import json
+from firebase_admin import firestore
 
-@login_required
 def create_course(request):
-    if request.method == 'POST':
-        form = CourseForm(request.POST)
-        if form.is_valid():
-            course = form.save(commit=False)
-            course.teacher = request.user
-            course.save()
-            return redirect('course_list')
-    else:
-        form = CourseForm()
-    return render(request, 'courses/create_course.html', {'form': form})
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            title = data.get("title")
+            description = data.get("description")
+            user_id = data.get("user_id")
 
-@login_required
-def course_list(request):
-    courses = Course.objects.filter(teacher=request.user)
-    return render(request, 'courses/course_list.html', {'courses': courses})
+            if not title or not description or not user_id:
+                return JsonResponse({"error": "Missing required fields"}, status=400)
 
-def all_courses(request):
-    courses = Course.objects.all()
-    return render(request, 'courses/all_courses.html', {'courses': courses})
+            # Проверяем, что пользователь существует
+            user_ref = db.collection("users").document(user_id).get()
+            if not user_ref.exists:
+                return JsonResponse({"error": "User not found"}, status=404)
 
-@login_required
-def course_detail(request, course_id):
-    course = get_object_or_404(Course, id=course_id)
-    reviews = course.reviews.all()
-    user_review = reviews.filter(student=request.user).first()  # Проверяем, оставил ли пользователь отзыв
+            # Создаём курс
+            course_data = {
+                "title": title,
+                "description": description,
+                "user_id": user_id,
+                "created_at": firestore.SERVER_TIMESTAMP
+            }
+            course_ref = db.collection("courses").add(course_data)[1]
+            return JsonResponse({"message": "Course created", "course_id": course_ref.id}, status=201)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "Invalid request method"}, status=405)
 
-    # Проверяем, является ли пользователь владельцем курса
-    if course.teacher == request.user:
-        messages.error(request, "Вы не можете оставить отзыв на свой собственный курс.")
-        form = None
-    else:
-        if request.method == 'POST':
-            form = ReviewForm(request.POST, instance=user_review)  # Если отзыв есть, редактируем его
-            if form.is_valid():
-                review = form.save(commit=False)
-                if not user_review:  # Если это новый отзыв
-                    review.course = course
-                    review.student = request.user
-                review.save()
-                messages.success(request, "Отзыв успешно сохранён!")
-                return redirect('course_detail', course_id=course.id)
-        else:
-            form = ReviewForm(instance=user_review)  # Заполняем форму текущими данными отзыва, если он есть
+def get_courses(request):
+    if request.method == "GET":
+        try:
+            courses = db.collection("courses").stream()
+            courses_list = [
+                {"id": course.id, **course.to_dict()} for course in courses
+            ]
+            return JsonResponse({"courses": courses_list}, status=200)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "Invalid request method"}, status=405)
 
-    return render(request, 'courses/course_detail.html', {
-        'course': course,
-        'reviews': reviews,
-        'form': form,
-        'user_review': user_review,
-    })
+def create_review(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            course_id = data.get("course_id")
+            user_id = data.get("user_id")
+            rating = data.get("rating")
+            comment = data.get("comment")
+
+            if not course_id or not user_id or not rating or not comment:
+                return JsonResponse({"error": "Missing required fields"}, status=400)
+
+            # Проверяем, что курс и пользователь существуют
+            course_ref = db.collection("courses").document(course_id).get()
+            if not course_ref.exists:
+                return JsonResponse({"error": "Course not found"}, status=404)
+            user_ref = db.collection("users").document(user_id).get()
+            if not user_ref.exists:
+                return JsonResponse({"error": "User not found"}, status=404)
+
+            # Создаём отзыв
+            review_data = {
+                "course_id": course_id,
+                "user_id": user_id,
+                "rating": rating,
+                "comment": comment,
+                "created_at": firestore.SERVER_TIMESTAMP
+            }
+            review_ref = db.collection("reviews").add(review_data)[1]
+            return JsonResponse({"message": "Review created", "review_id": review_ref.id}, status=201)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({"error": "Invalid request method"}, status=405)
