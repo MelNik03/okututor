@@ -1,24 +1,63 @@
-# Virtual environment
-venv/
-.env
-
-# Python
+# Python и Django
 __pycache__/
+*.py[cod]
 *.pyc
 *.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+*.env
+*.env.*
+.envrc
 
-# Database
+# Django
+*.log
+*.pot
+*.pyc
 *.sqlite3
 db.sqlite3
+migrations/
+*.migrate
 
-# Logs
-*.log
+# Firebase
+okututor-firebase-adminsdk.json
+firebase-adminsdk.json
+*.json  #
 
-# Django migrations
-*/migrations/*
-
-# IDE & OS files
+# Временные файлы и редакторы
+*.swp
+*~
+.DS_Store
 .vscode/
 .idea/
-.DS_Store
-*.swp
+*.sublime-project
+*.sublime-workspace
+
+# Зависимости
+node_modules/
+dist/
+build/
+
+# Тесты и отчёты
+*.coverage
+coverage/
+htmlcov/
+.pytest_cache/
+.tox/
+.coverage.*
+*.cover
+*.xml
+*.lcov
+
+# Локальные настройки
+local_settings.py
+settings_local.py
+
+# Прочие
+*.bak
+*.gho
+*.orig
+*.tmp
+*.temp
