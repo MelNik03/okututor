@@ -20,15 +20,22 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(unique=True)
-    fullname = models.CharField(max_length=255, default="Unknown")
+class User(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(unique=True, verbose_name="Email")
+    fullname = models.CharField(max_length=255, verbose_name="Полное имя")
+    phone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Телефон")
+    location = models.CharField(max_length=100, blank=True, null=True, verbose_name="Местоположение")
+    bio = models.TextField(blank=True, null=True, verbose_name="О себе")
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True, verbose_name="Аватар")
+    instagram = models.CharField(max_length=100, blank=True, null=True, verbose_name="Instagram")
+    telegram = models.CharField(max_length=100, blank=True, null=True, verbose_name="Telegram")
+    whatsapp = models.CharField(max_length=20, blank=True, null=True, verbose_name="WhatsApp")
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
-    USERNAME_FIELD = 'email'  # Djoser требует этот атрибут
+    USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['fullname']
 
     def __str__(self):
