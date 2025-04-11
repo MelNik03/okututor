@@ -10,9 +10,12 @@ FIREBASE_CRED_PATH = os.path.join(BASE_DIR, "okututor-f276b-firebase-adminsdk-fb
 if not os.path.exists(FIREBASE_CRED_PATH):
     raise FileNotFoundError(f"Firebase credentials file not found at: {FIREBASE_CRED_PATH}")
 
-# Инициализация Firebase
+# Инициализация Firebase только если приложение ещё не инициализировано
 cred = credentials.Certificate(FIREBASE_CRED_PATH)
-firebase_admin.initialize_app(cred)
+try:
+    firebase_admin.get_app()  # Проверяем, существует ли приложение
+except ValueError:
+    firebase_admin.initialize_app(cred)
 
 # Инициализация Firestore
 db = firestore.client()
