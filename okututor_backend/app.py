@@ -1,6 +1,20 @@
+import sys
+import os
+from pathlib import Path
 from flask import Flask, request, jsonify
+from dotenv import load_dotenv
+
+# Добавляем корень проекта в sys.path
+sys.path.append(str(Path(__file__).parent.parent))
+
+# Импорт контроллеров и конфигурации Firebase
 from users.user_controller import UserController
 from courses.course_controller import CourseController
+
+# Загружаем переменные окружения из .env (если нужно)
+env_path = Path(__file__).parent.parent / ".env"
+if env_path.exists():
+    load_dotenv(dotenv_path=env_path)
 
 app = Flask(__name__)
 
@@ -60,4 +74,5 @@ def delete_course(course_id):
     return jsonify(result), 200 if "error" not in result else 400
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    port = int(os.getenv("PORT", 5000))
+    app.run(debug=True, host="0.0.0.0", port=port)

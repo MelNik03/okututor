@@ -38,3 +38,4 @@ whitenoise==6.9.0
 firebase
 firebase-admin==6.7.0
 flask==3.0.3
+python-dotenv==1.0.0
