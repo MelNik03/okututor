@@ -1,8 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from users.user_controller import UserController
 from courses.course_controller import CourseController
 
 app = Flask(__name__)
+
+# Настраиваем CORS, разрешая запросы с вашего фронтенда
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:5173"]}})
 
 # Инициализация контроллеров
 user_controller = UserController()
