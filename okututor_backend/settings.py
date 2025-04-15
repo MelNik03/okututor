@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'courses',
+    "corsheaders",
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -81,6 +82,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = 'okututor_backend.urls'
@@ -159,5 +162,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Настройки медиафайлов
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB

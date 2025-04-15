@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 # Добавляем корень проекта в sys.path
 sys.path.append(str(Path(__file__).parent.parent))
@@ -17,6 +18,9 @@ if env_path.exists():
     load_dotenv(dotenv_path=env_path)
 
 app = Flask(__name__)
+
+# Настраиваем CORS, разрешая запросы с вашего фронтенда
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:5173"]}})
 
 # Инициализация контроллеров
 user_controller = UserController()
