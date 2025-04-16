@@ -1,0 +1,14 @@
+POST http://localhost:5000/api/courses
+Content-Type: application/json
+
+{
+    "user_id": "6LexrYsFDJbuaelMrG5muX97dSp2",
+    "title": "Math 101",
+    "description": "Learn basic math",
+    "days": "weekdays",
+    "specific_days": null,
+    "group_size": "individual",
+    "location_type": "online",
+    "experience": 5,
+    "price_per_hour": 1000.00
+}
