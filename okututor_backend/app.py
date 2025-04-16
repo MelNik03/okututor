@@ -32,10 +32,20 @@ def register():
     data = request.get_json()
     email = data.get("email")
     password = data.get("password")
+    repeat_password = data.get("repeat_password")
     full_name = data.get("full_name")
-    if not email or not password or not full_name:
+    if not email or not password or not repeat_password or not full_name:
         return jsonify({"error": "Missing required fields"}), 400
-    result = user_controller.register_user(email, password, full_name)
+    result = user_controller.register_user(email, password, repeat_password, full_name)
+    return jsonify(result), 200 if "error" not in result else 400
+
+@app.route("/api/google-login", methods=["POST"])
+def google_login():
+    data = request.get_json()
+    id_token = data.get("id_token")
+    if not id_token:
+        return jsonify({"error": "Missing ID token"}), 400
+    result = user_controller.google_login(id_token)
     return jsonify(result), 200 if "error" not in result else 400
 
 @app.route("/api/login", methods=["POST"])
