@@ -34,11 +34,24 @@ def login():
     result = user_controller.login_user(email, password)
     return jsonify(result), 200 if "error" not in result else 400
 
-@app.route("/api/user/<user_id>", methods=["GET"])
-def get_user(user_id):
-    result = user_controller.get_user(user_id)
-    return jsonify(result), 200 if "error" not in result else 404
+@app.route('/api/user/<user_id>', methods=['GET', 'PUT'])
+def user_profile(user_id):
+    if request.method == 'GET':
+        # Логика получения данных пользователя
+        user = db.collection('users').document(user_id).get()
+        if user.exists:
+            return jsonify(user.to_dict()), 200
+        return jsonify({"error": "User not found"}), 404
 
+    elif request.method == 'PUT':
+        # Логика обновления данных пользователя
+        data = request.get_json()
+        try:
+            db.collection('users').document(user_id).update(data)
+            return jsonify({"message": "User updated successfully"}), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+        
 # Эндпоинты для курсов
 @app.route("/api/courses", methods=["POST"])
 def create_course():
