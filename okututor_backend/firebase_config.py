@@ -15,7 +15,9 @@ cred = credentials.Certificate(FIREBASE_CRED_PATH)
 try:
     firebase_admin.get_app()  # Проверяем, существует ли приложение
 except ValueError:
-    firebase_admin.initialize_app(cred)
+    firebase_admin.initialize_app(cred, {
+        'projectId': 'okututor-f276b',  # Явно указываем projectId
+    })
 
 # Инициализация Firestore
 db = firestore.client()
