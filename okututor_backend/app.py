@@ -66,33 +66,35 @@ def user_profile(user_id):
         except Exception as e:
             return jsonify({"error": str(e)}), 500
         
-@app.route("/api/user/<user_id>/profile", methods=["PUT"])
-def update_user_profile(user_id):
-    data = request.get_json()
-    if not data:
-        return jsonify({"error": "No data provided"}), 400
-    result = user_controller.update_user_profile(user_id, data)
-    return jsonify(result), 200 if "error" not in result else 400
-
-# Эндпоинты для курсов
 @app.route("/api/courses", methods=["POST"])
 def create_course():
     data = request.get_json()
     user_id = data.get("user_id")
     title = data.get("title")
     description = data.get("description")
-    days = data.get("days")
-    specific_days = data.get("specific_days")
+    days = data.get("days", [])  # Устанавливаем значение по умолчанию как пустой список
+    specific_days = data.get("specific_days", [])  # Устанавливаем значение по умолчанию как пустой список
     group_size = data.get("group_size")
     location_type = data.get("location_type")
     experience = data.get("experience")
     price_per_hour = data.get("price_per_hour")
 
-    if not all([user_id, title, description, days, group_size, location_type, experience, price_per_hour]):
+    # Проверяем обязательные поля (кроме списков)
+    if not all([user_id, title, description, group_size, location_type, experience, price_per_hour]):
         return jsonify({"error": "Missing required fields"}), 400
 
-    result = course_controller.create_course(user_id, title, description, days, specific_days, 
-                                            group_size, location_type, experience, price_per_hour)
+    # Проверяем, что days — это список (хотя это поле необязательное, но лучше проверить)
+    if not isinstance(days, list):
+        return jsonify({"error": "Days must be a list"}), 400
+
+    # Проверяем, что specific_days — это список
+    if not isinstance(specific_days, list):
+        return jsonify({"error": "Specific days must be a list"}), 400
+
+    result = course_controller.create_course(
+        user_id, title, description, days, specific_days,
+        group_size, location_type, experience, price_per_hour
+    )
     return jsonify(result), 200 if "error" not in result else 400
 
 @app.route("/api/courses/<course_id>", methods=["PUT"])
