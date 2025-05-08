@@ -40,10 +40,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'users',
     'courses',
     "corsheaders",
 ]
+
+# Настройки Zoom
+ZOOM_CLIENT_ID = "your_client_id"
+ZOOM_CLIENT_SECRET = "your_client_secret"
+ZOOM_REDIRECT_URI = "http://localhost:8000/zoom/callback"
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
