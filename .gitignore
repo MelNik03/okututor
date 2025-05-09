@@ -26,7 +26,8 @@ okututor-firebase-adminsdk.json
 okututor-f276b-firebase-adminsdk-fbsvc-a53a702b8f.json
 firebase-adminsdk.json
 *.json  #
-
+# Ignore Firebase service account
+okututor-f276b-firebase-adminsdk-fbsvc-a53a702b8f.json
 # Временные файлы и редакторы
 *.swp
 *~
