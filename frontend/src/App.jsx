@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { useState } from "react";
 import PgMain from "./pages/PgMain";
 import Profile from "./pages/PgProfile";
 import Course from "./pages/PgCourse";
@@ -6,33 +7,41 @@ import CourseView from "./pages/PgCourseView";
 import PgAuditorium from "./pages/PgAuditorium"; // <--- добавлено
 import Auth from "./components/AuthRegister/Auth";
 import Register from "./components/AuthRegister/Register";
-import { useState } from "react";
 
 function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [redirectPath, setRedirectPath] = useState(null);
 
-  const openRegisterFromAuth = () => {
-    setIsAuthOpen(false);
-    setIsRegisterOpen(true);
-  };
-
-  const openAuthFromRegister = () => {
-    setIsRegisterOpen(false);
+  const handleAuthOpen = (path = null) => {
+    setRedirectPath(path);
     setIsAuthOpen(true);
   };
+
+  const handleAuthClose = () => {
+    setIsAuthOpen(false);
+    setRedirectPath(null);
+  };
+
+const handleAuthSuccess = (navigate) => {
+  if (redirectPath) {
+    navigate(redirectPath); // Переход на сохраненный путь
+  }
+  handleAuthClose();
+};
+
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/"
+        <Route 
+          path="/" 
           element={
-            <PgMain
-              onLogin={() => setIsAuthOpen(true)}
-              onSignup={() => setIsRegisterOpen(true)}
+            <PgMain 
+              onAuthOpen={handleAuthOpen} 
+              onRegisterOpen={() => setIsRegisterOpen(true)}
             />
-          }
+          } 
         />
         <Route path="/profile" element={<Profile />} />
         <Route path="/course" element={<Course />} />
@@ -40,15 +49,16 @@ function App() {
         <Route path="/auditorium" element={<PgAuditorium />} /> {/* новый маршрут */}
       </Routes>
 
-      <Auth
-        isOpen={isAuthOpen}
-        onClose={() => setIsAuthOpen(false)}
-        onOpenRegister={openRegisterFromAuth}
+      {/* Модальные окна авторизации и регистрации */}
+      <Auth 
+        isOpen={isAuthOpen} 
+        onClose={handleAuthClose} 
+        onSuccess={handleAuthSuccess} 
       />
-      <Register
-        isOpen={isRegisterOpen}
-        onClose={() => setIsRegisterOpen(false)}
-        onOpenAuth={openAuthFromRegister}
+      <Register 
+        isOpen={isRegisterOpen} 
+        onClose={() => setIsRegisterOpen(false)} 
+        onAuthOpen={() => setIsAuthOpen(true)}
       />
     </BrowserRouter>
   );

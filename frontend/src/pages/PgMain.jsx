@@ -1,8 +1,8 @@
+
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { scroller } from "react-scroll";
 import { useTranslation } from "react-i18next";
-
 import Navbar from "../components/Navbar";
 import HeroSection from "../components/HomeSection/HeroSection";
 import Category from "../components/HomeSection/Category";
@@ -38,12 +38,10 @@ function PgMain() {
     }
   }, [location.state]);
 
+const PgMain = ({ onAuthOpen, onRegisterOpen }) => {
   return (
     <>
-      <Navbar
-        onLogin={() => setIsAuthOpen(true)}
-        onSignup={() => setIsRegisterOpen(true)}
-      />
+      <Navbar onLogin={() => onAuthOpen()} onSignup={onRegisterOpen} />
 
       <section id="hero">
         <HeroSection />
@@ -60,30 +58,14 @@ function PgMain() {
       <HowItWorks />
 
       <section id="for-tutors">
-        <ForTutors onLogin={() => setIsAuthOpen(true)} />
+        <ForTutors onAuthOpen={onAuthOpen} />
       </section>
 
       <section id="about-us">
         <Footer />
       </section>
-
-      <section id="auth" className="inter">
-        <Auth
-          isOpen={isAuthOpen}
-          onClose={() => setIsAuthOpen(false)}
-          onOpenRegister={openRegisterFromAuth}
-        />
-      </section>
-
-      <section id="register" className="inter">
-        <Register
-          isOpen={isRegisterOpen}
-          onClose={() => setIsRegisterOpen(false)}
-          onOpenAuth={openAuthFromRegister}
-        />
-      </section>
     </>
   );
-}
+};
 
 export default PgMain;

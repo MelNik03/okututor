@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { auth } from "../../firebaseConfig";
 import "../../styles/HomeSectionCSS/ForTutors.css";
 import tutorImage from "../../assets/ForTutors/tutor-img.svg";
+import { auth } from "../../firebaseConfig";
 
 const ForTutors = ({ onLogin }) => {
   const { t } = useTranslation();
@@ -31,9 +32,10 @@ const ForTutors = ({ onLogin }) => {
     if (auth.currentUser) {
       navigate("/course");
     } else {
-      if (onLogin) onLogin();
+      onAuthOpen("/course");
     }
   };
+  
 
   return (
     <section className="for-tutors-section inter">
@@ -41,6 +43,7 @@ const ForTutors = ({ onLogin }) => {
         <span className="category-subtitle">{t("tutors.subtitle")}</span>
         <h2 className="category-title">{t("tutors.title")}</h2>
       </div>
+
       <div className="for-tutors-content">
         <div className="left-content">
           <div className="steps-container">
@@ -54,6 +57,7 @@ const ForTutors = ({ onLogin }) => {
               </div>
             ))}
           </div>
+
           <div className="button-wrapper">
             <button
               className="create-course-btn"
@@ -63,6 +67,7 @@ const ForTutors = ({ onLogin }) => {
             </button>
           </div>
         </div>
+
         <div className="tutor-image">
           <img src={tutorImage} alt="Tutor" />
         </div>
