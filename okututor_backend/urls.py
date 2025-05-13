@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('api/users/', include('users.urls')),
     path('api/courses/', include('courses.urls')),
+    path("api/", include("zoomapi.urls")),
 ]
 
 # Обслуживание медиафайлов в режиме разработки
