@@ -2,6 +2,25 @@ from django.http import JsonResponse
 from okututor_backend.firebase_config import db
 import json
 from firebase_admin import firestore
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .zoom import create_zoom_meeting
+from datetime import datetime, timedelta
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_meeting(request):
+    topic = request.data.get("topic", "Lesson on Okututor")
+    start_time = datetime.utcnow() + timedelta(minutes=5)  # 5 минут от сейчас
+    iso_start_time = start_time.isoformat() + "Z"  # ISO 8601 формат
+    meeting = create_zoom_meeting(topic, iso_start_time)
+    return Response({
+        "join_url": meeting["join_url"],
+        "start_url": meeting["start_url"],
+        "meeting_id": meeting["id"]
+    })
+
 
 def create_course(request):
     if request.method == "POST":

@@ -3,8 +3,58 @@ import os
 from pathlib import Path
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
-from flask_cors import CORS
 import logging
+from flask import Flask, request, jsonify, make_response
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
+
+@app.after_request
+def apply_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    return response
+
+@app.route("/api/create-meeting/", methods=["OPTIONS"])
+def options_create_meeting():
+    return '', 200
+
+from courses.zoom import create_zoom_meeting
+
+from courses.zoom import create_zoom_meeting
+
+@app.route("/api/create-meeting/", methods=["POST"])
+def create_meeting():
+    print("✅ [FLASK] create_meeting() запущен")  # проверка, что маршрут вызывается
+    data = request.get_json()
+    print("📦 Получены данные:", data)
+
+    topic = data.get("topic", "Okututor Meeting")
+    start_time = data.get("start_time")
+    duration = data.get("duration", 30)
+
+    if not start_time:
+        print("❌ Нет start_time в запросе")
+        return jsonify({"error": "start_time is required in ISO format"}), 400
+
+    try:
+        print("⏳ Вызываем create_zoom_meeting()...")
+        meeting = create_zoom_meeting(topic, start_time, duration)
+        print("✅ Zoom-встреча создана:", meeting)
+
+        return jsonify({
+            "message": "Meeting created successfully",
+            "join_url": meeting["join_url"],
+            "meeting_id": meeting["id"],
+            "start_time": meeting["start_time"]
+        }), 200
+    except Exception as e:
+        print("❌ ОШИБКА при создании Zoom встречи:", str(e))
+        return jsonify({"error": "Failed to create Zoom meeting", "details": str(e)}), 500
+
+
 
 # Настройка логирования
 logging.basicConfig(level=logging.DEBUG)
@@ -21,11 +71,9 @@ env_path = Path(__file__).parent.parent / ".env"
 if env_path.exists():
     load_dotenv(dotenv_path=env_path)
 
-app = Flask(__name__)
 
 # Настраиваем CORS, разрешая запросы с вашего фронтенда
-CORS(app, resources={r"/api/*": {"origins": ["http://localhost:5173"]}})
-
+#CORS(app, resources={r"/api/*": {"origins": ["http://localhost:5173"]}})
 # Инициализация контроллеров
 user_controller = UserController()
 course_controller = CourseController()
