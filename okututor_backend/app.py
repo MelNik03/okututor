@@ -183,37 +183,47 @@ def update_user_profile(user_id):
     return jsonify(result), 200 if "error" not in result else 400
 
 # Эндпоинты для курсов
-@app.route("/api/courses", methods=["POST"])
-def create_course():
-    data = request.get_json()
-    logging.debug(f"Create course request data: {data}")
-    user_id = data.get("user_id")
-    title = data.get("title")
-    description = data.get("description")
-    days = data.get("days")
-    specific_days = data.get("specific_days")
-    group_size = data.get("group_size")
-    location_type = data.get("location_type")
-    experience = data.get("experience")
-    price_per_hour = data.get("price_per_hour")
+@app.route("/api/courses", methods=["GET", "POST"])
+def handle_courses():
+    if request.method == "POST":
+        data = request.get_json()
+        logging.debug(f"Create course request data: {data}")
+        user_id = data.get("user_id")
+        title = data.get("title")
+        description = data.get("description")
+        days = data.get("days")
+        specific_days = data.get("specific_days")
+        group_size = data.get("group_size")
+        location_type = data.get("location_type")
+        experience = data.get("experience")
+        price_per_hour = data.get("price_per_hour")
 
-    # Проверяем обязательные поля
-    if not all([user_id, title, description, days, group_size, location_type, experience, price_per_hour]):
-        logging.error("Missing required fields in create course request")
-        return jsonify({"error": "Missing required fields"}), 400
+        if not all([user_id, title, description, days, group_size, location_type, experience, price_per_hour]):
+            logging.error("Missing required fields in create course request")
+            return jsonify({"error": "Missing required fields"}), 400
 
-    # Проверяем типы числовых полей
-    try:
-        experience = int(experience)
-        price_per_hour = float(price_per_hour)
-    except (ValueError, TypeError):
-        logging.error("Invalid type for experience or price_per_hour")
-        return jsonify({"error": "Experience must be an integer and price_per_hour must be a number"}), 400
+        try:
+            experience = int(experience)
+            price_per_hour = float(price_per_hour)
+        except (ValueError, TypeError):
+            logging.error("Invalid type for experience or price_per_hour")
+            return jsonify({"error": "Experience must be an integer and price_per_hour must be a number"}), 400
 
-    result = course_controller.create_course(user_id, title, description, days, specific_days, 
-                                            group_size, location_type, experience, price_per_hour)
-    logging.debug(f"Create course result: {result}")
-    return jsonify(result), 200 if "error" not in result else 400
+        result = course_controller.create_course(
+            user_id, title, description, days, specific_days,
+            group_size, location_type, experience, price_per_hour
+        )
+        logging.debug(f"Create course result: {result}")
+        return jsonify(result), 200 if "error" not in result else 400
+
+    elif request.method == "GET":
+        try:
+            logging.info("Fetching all courses...")
+            all_courses = course_controller.get_all_courses()
+            return jsonify(all_courses), 200
+        except Exception as e:
+            logging.error(f"Error fetching courses: {e}")
+            return jsonify({"error": "Failed to fetch courses"}), 500
 
 @app.route("/api/courses/<course_id>", methods=["PUT"])
 def update_course(course_id):
