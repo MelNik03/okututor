@@ -123,8 +123,13 @@ class CourseController:
             for doc in courses_ref:
                 course = doc.to_dict()
                 course["id"] = doc.id
+    
                 if "specific_days" in course and isinstance(course["specific_days"], str):
                     course["specific_days"] = course["specific_days"].split(",")
+    
+                # ✅ Добавляем среднюю оценку
+                course["average_rating"] = self._get_average_rating(doc.id)
+    
                 course_list.append(course)
             return course_list
         except Exception as e:
