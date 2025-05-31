@@ -1,0 +1,191 @@
+/* Устанавливаем box-sizing для всех элементов */
+* {
+  box-sizing: border-box;
+}
+
+.register-form {
+  width: 100%;
+}
+
+.register-form h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+
+.mankey-icon {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
+
+.google-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background-color 0.2s;
+}
+
+.google-btn:hover {
+  background-color: #f9f9f9;
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.divider {
+  display: flex; /* Используем flex для выравнивания */
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.divider span {
+  padding: 0 10px;
+  color: #888;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1; /* Линии занимают оставшееся пространство */
+  height: 1px;
+  background-color: #e0e0e0;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.password-input-wrapper {
+  position: relative;
+}
+
+.password-input-wrapper input {
+  padding-right: 30px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.toggle-password img {
+  width: 19px;
+  height: 18px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #3eb489;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-transform: uppercase;
+}
+
+.submit-btn:hover {
+  background-color: #356d5a;
+}
+
+.login-link {
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+  margin-top: 20px;
+}
+
+.login-link a {
+  color: #3eb489;
+  text-decoration: none;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+/* Адаптивность */
+@media (max-width: 600px) {
+  .register-form h2 {
+    font-size: 20px;
+  }
+
+  .mankey-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .submit-btn {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .form-group input {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .login-link {
+    font-size: 12px;
+  }
+
+  .toggle-password img {
+    width: 16px;
+    height: 15px;
+  }
+}
+
+/* Стили для сообщений */
+.error-message {
+  color: #d32f2f;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.success-message {
+  color: #388e3c;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 15px;
+}

@@ -1,0 +1,152 @@
+.course-detail-container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+  font-family: 'Inter', sans-serif;
+  color: #333;
+}
+
+.course-header {
+  background: linear-gradient(90deg, #3eb489, #356d5a);
+  color: white;
+  padding: 30px 20px;
+  border-radius: 8px 8px 0 0;
+}
+
+.course-header h1 {
+  margin: 0;
+  font-size: 32px;
+}
+
+.course-meta {
+  margin: 20px 0;
+  line-height: 1.6;
+}
+
+.tutor-info {
+  margin: 30px 0 10px;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+.owner-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.btn-edit,
+.btn-delete {
+  padding: 10px 20px;
+  border: none;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-edit {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn-delete {
+  background-color: #e74c3c;
+  color: white;
+}
+
+
+.review-form h4 {
+  margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #355b38;
+}
+
+.review-form input[type="number"],
+.review-form textarea {
+  width: 100%;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.3s ease;
+  font-family: "Inter", sans-serif;
+}
+
+.review-form input[type="number"]:focus,
+.review-form textarea:focus {
+  border-color: #3eb489;
+  outline: none;
+}
+
+.review-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.review-form button {
+  background-color: #3eb489;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.review-form button:hover {
+  background-color: #356d5a;
+}
+.tutor-avatar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.course-avatar {
+  width: 100px; /* Настройте размер под дизайн */
+  height: 100px;
+  border-radius: 10%;
+  object-fit: cover;
+  margin-right: 15px;
+}
+.course-detail-container p {
+  margin: 5px 0;
+}
+.loading {
+  color: #666;
+  text-align: center;
+}
+.star-rating {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.star-rating svg:hover {
+  transform: scale(1.2);
+  transition: transform 0.2s;
+}
+
+/* Optional mobile optimization */
+@media (max-width: 600px) {
+  .review-form {
+    padding: 16px;
+  }
+
+  .review-form h4 {
+    font-size: 18px;
+  }
+
+  .review-form button {
+    width: 100%;
+    margin-top: 8px;
+  }
+}
